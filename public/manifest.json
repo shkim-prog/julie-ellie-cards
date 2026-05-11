@@ -1,0 +1,16 @@
+{
+  "name": "줄리엘리 카드",
+  "short_name": "줄리엘리",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fce7f3",
+  "theme_color": "#ec4899",
+  "icons": [
+    {
+      "src": "/card-back.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
