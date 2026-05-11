@@ -56,50 +56,19 @@ const buildDeck = () => {
 };
 
 const CardBack = () => (
-  <div className="w-full h-full rounded-lg bg-gradient-to-br from-pink-400 via-fuchsia-400 to-indigo-500 flex flex-col items-center justify-center relative overflow-hidden">
-    <div className="absolute inset-1 border-2 border-white/40 rounded-md pointer-events-none" />
-    <svg viewBox="0 0 60 50" className="w-3/4 h-auto" preserveAspectRatio="xMidYMid meet">
-      {/* Julie - brown hair */}
-      <g transform="translate(20, 26)">
-        <ellipse cx="0" cy="-1" rx="11" ry="12" fill="#7c2d12" />
-        <circle cx="0" cy="1" r="8" fill="#fde0c5" />
-        <path d="M -8 -3 Q -7 -10 0 -8 Q 7 -10 8 -3 Q 5 -7 0 -6 Q -5 -7 -8 -3 Z" fill="#7c2d12" />
-        <circle cx="-2.5" cy="0" r="1" fill="#1f2937" />
-        <circle cx="2.5" cy="0" r="1" fill="#1f2937" />
-        <path d="M -2 4 Q 0 6 2 4" stroke="#dc2626" strokeWidth="0.8" fill="none" strokeLinecap="round" />
-        <circle cx="-4.5" cy="3" r="1" fill="#fda4af" opacity="0.7" />
-        <circle cx="4.5" cy="3" r="1" fill="#fda4af" opacity="0.7" />
-      </g>
-      {/* Ellie - blonde with bow */}
-      <g transform="translate(40, 26)">
-        <ellipse cx="0" cy="-1" rx="11" ry="12" fill="#fbbf24" />
-        <circle cx="0" cy="1" r="8" fill="#fde0c5" />
-        <path d="M -8 -3 Q -7 -11 -3 -8 Q 0 -10 3 -8 Q 7 -11 8 -3 Q 5 -6 0 -5 Q -5 -6 -8 -3 Z" fill="#fbbf24" />
-        <path d="M 4 -8 L 8 -10 L 8 -6 Z" fill="#ec4899" />
-        <path d="M 6 -8 L 10 -6 L 10 -10 Z" fill="#ec4899" />
-        <circle cx="7" cy="-8" r="0.8" fill="#be185d" />
-        <circle cx="-2.5" cy="0" r="1" fill="#1f2937" />
-        <circle cx="2.5" cy="0" r="1" fill="#1f2937" />
-        <path d="M -2 4 Q 0 6 2 4" stroke="#dc2626" strokeWidth="0.8" fill="none" strokeLinecap="round" />
-        <circle cx="-4.5" cy="3" r="1" fill="#fda4af" opacity="0.7" />
-        <circle cx="4.5" cy="3" r="1" fill="#fda4af" opacity="0.7" />
-      </g>
-      <text x="30" y="14" textAnchor="middle" fontSize="6" fill="#fbcfe8">♥</text>
-    </svg>
-    <div className="text-white font-bold tracking-wider text-[7px] sm:text-[9px] md:text-[10px] mt-0.5 drop-shadow">
-      줄리엘리
-    </div>
+  <div className="w-full h-full rounded-2xl overflow-hidden">
+    <img src="/card-back.png" alt="줄리엘리" className="w-full h-full object-cover" draggable={false} />
   </div>
 );
 
 function CardFace({ card, isMatched, theme }) {
   return (
-    <div className={`w-full h-full rounded-lg bg-white flex flex-col items-center justify-center border-2 ${
-      isMatched ? (theme?.border || 'border-gray-300') : 'border-gray-200'
-    } ${isMatched ? (theme?.soft || 'bg-gray-50') : ''} shadow-sm`}>
-      <div className="text-xl sm:text-2xl md:text-3xl leading-none">{card.emoji}</div>
-      <div className="text-sm sm:text-base md:text-lg font-bold text-gray-800 leading-none mt-0.5">{card.letter}</div>
-      <div className="text-[7px] sm:text-[9px] md:text-[10px] text-gray-500 leading-none mt-0.5">{card.word}</div>
+    <div translate="no" className={`w-full h-full rounded-2xl bg-white flex flex-col items-center justify-center border-3 p-1 gap-0.5 ${
+      isMatched ? (theme?.border || 'border-gray-300') : 'border-purple-200'
+    } ${isMatched ? (theme?.soft || 'bg-gray-50') : 'bg-gradient-to-b from-white to-purple-50'} shadow notranslate`}>
+      <div className="text-2xl sm:text-3xl md:text-4xl leading-none drop-shadow-sm">{card.emoji}</div>
+      <div className="text-lg sm:text-xl md:text-2xl font-extrabold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent leading-none">{card.letter}</div>
+      <div className="text-[8px] sm:text-[10px] md:text-xs font-bold text-gray-500 leading-none">{card.word}</div>
     </div>
   );
 }
@@ -115,7 +84,7 @@ function Card({ card, isFlipped, isMatched, isDisabled, onClick, lastMatchedThem
         touchAction: 'manipulation',
         WebkitTapHighlightColor: 'transparent',
       }}
-      className={`relative aspect-square w-full focus:outline-none focus:ring-2 focus:ring-purple-400 rounded-lg transition-all duration-300 select-none ${
+      className={`relative aspect-[3/4] w-full focus:outline-none focus:ring-2 focus:ring-purple-400 rounded-2xl transition-all duration-300 select-none ${
         isMatched ? 'opacity-60' : (isDisabled ? '' : 'hover:scale-105 active:scale-95 cursor-pointer')
       }`}
     >
@@ -314,16 +283,15 @@ function GameScreen({ numPlayers, names, onGameOver, onNewGame }) {
   const [previewLeft, setPreviewLeft] = useState(PREVIEW_SECONDS);
   const [cols, setCols] = useState(13);
 
-  // Responsive columns: adapts to viewport size + orientation (iPad portrait vs landscape, phone, desktop)
+  // iPad 4:3 optimized grid — 52 cards, landscape: 13×4, portrait: 8×7
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
       const h = window.innerHeight;
       const portrait = h > w;
       if (w < 480) setCols(6);
-      else if (w < 800) setCols(portrait ? 7 : 10);
-      else if (w < 1100) setCols(portrait ? 8 : 13);
-      else setCols(13);
+      else if (w < 800) setCols(portrait ? 7 : 9);
+      else setCols(portrait ? 8 : 13);
     };
     update();
     window.addEventListener('resize', update);
@@ -417,59 +385,59 @@ function GameScreen({ numPlayers, names, onGameOver, onNewGame }) {
 
   return (
     <div className={`min-h-screen transition-colors duration-500 ${theme.soft}`}>
-      <div className="max-w-screen-2xl mx-auto p-2 sm:p-4">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3 sm:mb-4 px-1">
-          <div className="flex items-center gap-2">
-            <div className={`p-2 rounded-xl bg-gradient-to-br ${theme.grad} shadow`}>
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+      <div className="max-w-screen-2xl mx-auto px-2 pt-1 pb-2 sm:px-3 sm:pt-2 sm:pb-3">
+        {/* Header — compact */}
+        <div className="flex items-center justify-between mb-1.5 sm:mb-2 px-1">
+          <div className="flex items-center gap-1.5">
+            <div className={`p-1.5 rounded-lg bg-gradient-to-br ${theme.grad} shadow`}>
+              <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" />
             </div>
-            <h1 className="text-base sm:text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-sm sm:text-base font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
               줄리엘리 카드
             </h1>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="text-xs sm:text-sm text-gray-600 font-medium">
-              {matchedCount}/{totalPairs} 짝
+          <div className="flex items-center gap-1.5">
+            <div className="text-xs text-gray-600 font-medium">
+              {matchedCount}/{totalPairs}
             </div>
             <button
               onClick={reshuffleAll}
-              className="p-2 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
+              className="p-1.5 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors"
               title="카드 다시 섞기"
             >
-              <RefreshCw className="w-4 h-4 text-gray-600" />
+              <RefreshCw className="w-3.5 h-3.5 text-gray-600" />
             </button>
             <button
               onClick={onNewGame}
-              className="p-2 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors text-xs font-semibold text-gray-700 px-3"
+              className="p-1.5 bg-white rounded-lg shadow hover:bg-gray-50 transition-colors text-xs font-semibold text-gray-700 px-2"
             >
               종료
             </button>
           </div>
         </div>
 
-        {/* Players bar */}
-        <div className={`grid gap-2 mb-3 sm:mb-4`} style={{ gridTemplateColumns: `repeat(${numPlayers}, minmax(0, 1fr))` }}>
+        {/* Players bar — compact */}
+        <div className={`grid gap-1.5 mb-1.5 sm:mb-2`} style={{ gridTemplateColumns: `repeat(${numPlayers}, minmax(0, 1fr))` }}>
           {Array.from({ length: numPlayers }).map((_, i) => {
             const t = THEMES[i];
             const isMe = i === currentPlayer;
             return (
               <div
                 key={i}
-                className={`relative rounded-xl p-2 sm:p-3 transition-all duration-300 ${
+                className={`relative rounded-lg p-1.5 sm:p-2 transition-all duration-300 ${
                   isMe
-                    ? `bg-gradient-to-br ${t.grad} text-white shadow-lg scale-105 ring-4 ${t.ring} ring-opacity-50`
+                    ? `bg-gradient-to-br ${t.grad} text-white shadow-lg ring-2 ${t.ring} ring-opacity-50`
                     : 'bg-white text-gray-700 shadow'
                 }`}
               >
                 {isMe && (
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-white text-gray-800 text-[9px] sm:text-xs font-bold px-2 py-0.5 rounded-full shadow whitespace-nowrap">
+                  <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 bg-white text-gray-800 text-[8px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow whitespace-nowrap">
                     🎯 내 차례
                   </div>
                 )}
                 <div className="flex items-center justify-between gap-1">
-                  <div className="font-bold text-xs sm:text-sm truncate">{names[i]}</div>
-                  <div className={`text-base sm:text-xl font-black ${isMe ? 'text-white' : t.text}`}>
+                  <div className="font-bold text-[10px] sm:text-xs truncate">{names[i]}</div>
+                  <div className={`text-sm sm:text-base font-black ${isMe ? 'text-white' : t.text}`}>
                     {scores[i]}
                   </div>
                 </div>
@@ -478,23 +446,27 @@ function GameScreen({ numPlayers, names, onGameOver, onNewGame }) {
           })}
         </div>
 
-        {/* Feedback banner */}
-        <div className="h-6 sm:h-8 mb-2 flex items-center justify-center">
-          {feedback === 'match' && (
-            <div className={`px-4 py-1 rounded-full bg-gradient-to-r ${theme.grad} text-white font-bold text-xs sm:text-sm shadow animate-pulse`}>
+        {/* Status banner — fixed height so layout never shifts */}
+        <div className="h-6 sm:h-7 mb-1 flex items-center justify-center">
+          {isPreview ? (
+            <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full px-4 py-0.5 flex items-center gap-2 shadow-lg animate-pulse">
+              <span className="text-xs sm:text-sm font-bold">카드를 외우세요!</span>
+              <span className="text-base sm:text-lg font-black tabular-nums">{previewLeft}</span>
+            </div>
+          ) : feedback === 'match' ? (
+            <div className={`px-4 py-0.5 rounded-full bg-gradient-to-r ${theme.grad} text-white font-bold text-xs sm:text-sm shadow animate-pulse`}>
               🎉 짝! 한 번 더!
             </div>
-          )}
-          {feedback === 'nomatch' && (
-            <div className="px-4 py-1 rounded-full bg-gray-200 text-gray-700 font-bold text-xs sm:text-sm shadow">
+          ) : feedback === 'nomatch' ? (
+            <div className="px-4 py-0.5 rounded-full bg-gray-200 text-gray-700 font-bold text-xs sm:text-sm shadow">
               💨 다음 차례...
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Cards grid */}
         <div
-          className="grid gap-1.5 sm:gap-2 md:gap-2.5"
+          className="grid gap-1 sm:gap-1.5"
           style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
         >
           {cards.map(card => (
@@ -510,8 +482,8 @@ function GameScreen({ numPlayers, names, onGameOver, onNewGame }) {
           ))}
         </div>
 
-        <div className="text-center text-[10px] sm:text-xs text-gray-400 mt-4">
-          짝 맞추면 <span className="font-bold">한 번 더</span>, 틀리면 <span className="font-bold">다음 사람</span> 차례
+        <div className="text-center text-[9px] sm:text-[10px] text-gray-400 mt-1">
+          짝 맞추면 <span className="font-bold">한 번 더</span> · 틀리면 <span className="font-bold">다음 사람</span>
         </div>
       </div>
     </div>
